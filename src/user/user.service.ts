@@ -9,7 +9,11 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>) {}
 
-  create (user: User): Promise<User> {
+  save (user: User): Promise<User> {
     return this.userRepository.save(user);
+  }
+
+  findOne (id: number): Promise<User> {
+    return this.userRepository.findOne(id);
   }
 }
