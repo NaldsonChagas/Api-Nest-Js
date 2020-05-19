@@ -15,6 +15,12 @@ export class User {
   @Column()
   monthlyIncome: number
 
+  @Column()
+  email: string
+
+  @Column()
+  password: string
+
   @OneToMany(type => Purchase, purchase => purchase.user)
   purchases: Purchase[]
 }
