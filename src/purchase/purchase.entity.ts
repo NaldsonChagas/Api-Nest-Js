@@ -2,6 +2,7 @@ import { PrimaryGeneratedColumn, Column, Entity, OneToOne, ManyToOne, CreateDate
 import { User } from 'src/user/user.entity';
 import { Category } from 'src/category/category.entity';
 import { Installments } from 'src/installments/installments.entity';
+import { Length, IsNotEmpty } from 'class-validator';
 
 @Entity()
 export class Purchase {
@@ -9,15 +10,18 @@ export class Purchase {
   id: number
 
   @Column()
+  @Length(2, 90)
   title: string
 
-  @Column()
+  @Column({ type: 'float' })
   value: number
 
   @Column()
+  @IsNotEmpty()
   latitude: string
 
   @Column()
+  @IsNotEmpty()
   longitude: string
 
   @OneToOne(type => Installments, installments => installments.purchase)

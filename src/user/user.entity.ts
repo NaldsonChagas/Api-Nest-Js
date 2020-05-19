@@ -18,7 +18,7 @@ export class User {
   @IsNotEmpty()
   surname: string
 
-  @Column()
+  @Column({ type: 'float' })
   monthlyIncome: number
 
   @Column()
