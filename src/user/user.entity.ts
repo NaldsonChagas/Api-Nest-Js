@@ -21,7 +21,7 @@ export class User {
   @Column({ type: 'float' })
   monthlyIncome: number
 
-  @Column()
+  @Column({ unique: true })
   @IsEmail()
   email: string
 

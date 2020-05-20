@@ -1,4 +1,4 @@
-import { PrimaryGeneratedColumn, Column, Entity, OneToOne, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { PrimaryGeneratedColumn, Column, Entity, OneToOne, ManyToOne, CreateDateColumn, UpdateDateColumn, Timestamp } from 'typeorm';
 import { User } from 'src/user/user.entity';
 import { Category } from 'src/category/category.entity';
 import { Installments } from 'src/installments/installments.entity';
@@ -32,6 +32,9 @@ export class Purchase {
 
   @ManyToOne(type => Category, category => category.purchases)
   category: Category
+
+  @Column({ type: 'date' })
+  date: Date
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

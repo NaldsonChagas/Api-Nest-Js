@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, JoinColumn, Column, OneToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, JoinColumn, Column, OneToOne, Unique } from 'typeorm';
 import { Purchase } from 'src/purchase/purchase.entity';
 
 @Entity()
@@ -12,4 +12,10 @@ export class Installments {
 
   @Column({ default: 0 })
   installments: number
+
+  @Column({ type: 'date' })
+  start: Date
+
+  @Column({ type: 'date' })
+  end: Date
 }

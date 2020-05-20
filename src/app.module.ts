@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PurchaseService } from './purchase/purchase.service';
 import { PurchaseModule } from './purchase/purchase.module';
 import { CategoryModule } from './category/category.module';
 import { UserModule } from './user/user.module';
@@ -29,6 +28,6 @@ import { EasyconfigModule } from 'nestjs-easyconfig';
     InstallmentsModule
   ],
   controllers: [AppController],
-  providers: [AppService, PurchaseService]
+  providers: [AppService]
 })
 export class AppModule {}
