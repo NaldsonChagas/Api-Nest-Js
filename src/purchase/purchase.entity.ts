@@ -27,7 +27,8 @@ export class Purchase {
   @OneToOne(type => Installments, installments => installments.purchase)
   installments: Installments
 
-  @ManyToOne(type => User, user => user.purchases)
+  @ManyToOne(type => User, user => user.purchases,
+    { nullable: false })
   user: User
 
   @ManyToOne(type => Category, category => category.purchases)
