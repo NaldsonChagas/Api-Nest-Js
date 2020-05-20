@@ -1,7 +1,6 @@
-import { Controller, Post, Body, Put, Req, Get, Param, Delete, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Body, Put, Req, Get, Param, Delete, BadRequestException, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
-import { ValidationPipe } from '../pipes/validation.pipe';
 import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
 
