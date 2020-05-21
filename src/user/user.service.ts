@@ -13,6 +13,11 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
+  increaseMonthlyExpense (user: User, expenseValue: number) {
+    user.monthlyExpense += expenseValue;
+    this.save(user);
+  }
+
   findOne (id: number): Promise<User> {
     return this.userRepository.findOne(id);
   }

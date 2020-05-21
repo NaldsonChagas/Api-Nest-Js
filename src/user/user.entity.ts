@@ -21,6 +21,9 @@ export class User {
   @Column({ type: 'float' })
   monthlyIncome: number
 
+  @Column({ type: 'float', default: 0 })
+  monthlyExpense: number
+
   @Column({ unique: true })
   @IsEmail()
   email: string

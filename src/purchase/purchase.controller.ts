@@ -7,7 +7,6 @@ import { CategoryService } from 'src/category/category.service';
 import { Purchase } from './purchase.entity';
 import { User } from 'src/user/user.entity';
 import { CsvService } from 'src/csv/csv.service';
-import { Category } from 'src/category/category.entity';
 
 @Controller('purchase')
 export class PurchaseController {
@@ -25,6 +24,10 @@ export class PurchaseController {
     purchase.category = await this.categoryService
       .findOne(purchase.categoryId ?? 6);
 
+    const expense = purchase.installments
+      ? purchase.value / purchase.installments : purchase.value;
+
+    this.userService.increaseMonthlyExpense(purchase.user, expense);
     const savedPurchase: Purchase = await this.purchaseService.save(purchase);
     if (purchase.installments) {
       await this.installmentsService
