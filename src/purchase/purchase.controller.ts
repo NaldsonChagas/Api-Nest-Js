@@ -6,7 +6,7 @@ import { UserService } from 'src/user/user.service';
 import { CategoryService } from 'src/category/category.service';
 import { Purchase } from './purchase.entity';
 import { User } from 'src/user/user.entity';
-import { DeleteResult } from 'typeorm';
+import { CsvService } from 'src/csv/csv.service';
 
 @Controller('purchase')
 export class PurchaseController {
@@ -14,7 +14,8 @@ export class PurchaseController {
     private purchaseService: PurchaseService,
     private installmentsService: InstallmentsService,
     private userService: UserService,
-    private categoryService: CategoryService) {}
+    private categoryService: CategoryService,
+    private csvService: CsvService) {}
 
   @Post()
   async create (@Body(new ValidationPipe()) purchase, @Req() request: Request) {
@@ -27,6 +28,20 @@ export class PurchaseController {
     await this.installmentsService
       .save(savedPurchase, new Date(purchase.date + 'T00:00'), purchase.installments);
     return savedPurchase;
+  }
+
+  @Get('/csv-sender')
+  async csvSender (@Req() request: Request) {
+    const user: User = await this.userService.findOne(
+      Number(request.headers.userid)
+    );
+    const purchases = await this.purchaseService.findByUser(user);
+
+    const header = 'Codigo;Titulo;Valor;Parcelas;Categoria;Data';
+    const content = purchases.map(purchase => purchase.toString());
+
+    const csvPath = this.csvService
+      .generateCsv(`${user.name}-${user.surname}`, header, content);
   }
 
   @Get()
@@ -51,7 +66,7 @@ export class PurchaseController {
   }
 
   @Delete(':id')
-  async delete (@Param('id') id: number) {
+  async delete (@Param() id: number) {
     const purchase = await this.purchaseService.findOne(id);
     return this.purchaseService.delete(purchase.id);
   }

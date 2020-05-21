@@ -6,13 +6,15 @@ import { Purchase } from './purchase.entity';
 import { InstallmentsModule } from 'src/installments/installments.module';
 import { UserModule } from 'src/user/user.module';
 import { CategoryModule } from 'src/category/category.module';
+import { CsvModule } from 'src/csv/csv.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Purchase]),
     InstallmentsModule,
     UserModule,
-    CategoryModule
+    CategoryModule,
+    CsvModule
   ],
   controllers: [PurchaseController],
   providers: [PurchaseService]

@@ -42,4 +42,8 @@ export class Purchase {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
+
+  public toString (): string {
+    return `${this.id};${this.title};${this.value};${this.installments.installments};${this.category.title};${this.date}`;
+  }
 }

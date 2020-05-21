@@ -7,6 +7,8 @@ import { CategoryModule } from './category/category.module';
 import { UserModule } from './user/user.module';
 import { InstallmentsModule } from './installments/installments.module';
 import { EasyconfigModule } from 'nestjs-easyconfig';
+import { CsvService } from './csv/csv.service';
+import { CsvModule } from './csv/csv.module';
 
 @Module({
   imports: [
@@ -25,9 +27,10 @@ import { EasyconfigModule } from 'nestjs-easyconfig';
     PurchaseModule,
     CategoryModule,
     UserModule,
-    InstallmentsModule
+    InstallmentsModule,
+    CsvModule
   ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [AppService, CsvService]
 })
 export class AppModule {}
