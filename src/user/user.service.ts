@@ -18,6 +18,14 @@ export class UserService {
     this.save(user);
   }
 
+  async restoreMonthlyExpense () {
+    const users: User[] = await this.userRepository.find();
+    users.forEach(user => {
+      user.monthlyExpense = 0;
+      this.save(user);
+    });
+  }
+
   findOne (id: number): Promise<User> {
     return this.userRepository.findOne(id);
   }

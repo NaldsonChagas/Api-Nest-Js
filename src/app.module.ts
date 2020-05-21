@@ -7,11 +7,13 @@ import { CategoryModule } from './category/category.module';
 import { UserModule } from './user/user.module';
 import { InstallmentsModule } from './installments/installments.module';
 import { EasyconfigModule } from 'nestjs-easyconfig';
-import { CsvService } from './csv/csv.service';
+import { ScheduleModule } from '@nestjs/schedule';
 import { CsvModule } from './csv/csv.module';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     EasyconfigModule.register({
       path: './.env'
     }),
@@ -28,9 +30,10 @@ import { CsvModule } from './csv/csv.module';
     CategoryModule,
     UserModule,
     InstallmentsModule,
-    CsvModule
+    CsvModule,
+    TaskModule
   ],
   controllers: [AppController],
-  providers: [AppService, CsvService]
+  providers: [AppService]
 })
 export class AppModule {}
