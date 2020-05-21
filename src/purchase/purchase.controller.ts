@@ -1,4 +1,4 @@
-import { Controller, Post, Body, ValidationPipe, Req, Delete, Get, Param, Put, Res } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe, Req, Delete, Get, Param, Put, Res, InternalServerErrorException } from '@nestjs/common';
 import { PurchaseService } from './purchase.service';
 import { InstallmentsService } from 'src/installments/installments.service';
 import { Request, Response } from 'express';
@@ -7,6 +7,7 @@ import { CategoryService } from 'src/category/category.service';
 import { Purchase } from './purchase.entity';
 import { User } from 'src/user/user.entity';
 import { CsvService } from 'src/csv/csv.service';
+import { Connection } from 'typeorm';
 
 @Controller('purchase')
 export class PurchaseController {
@@ -15,7 +16,8 @@ export class PurchaseController {
     private installmentsService: InstallmentsService,
     private userService: UserService,
     private categoryService: CategoryService,
-    private csvService: CsvService) {}
+    private csvService: CsvService,
+    private connection: Connection) {}
 
   @Post()
   async create (@Body(new ValidationPipe()) purchase, @Req() request: Request) {
@@ -27,13 +29,24 @@ export class PurchaseController {
     const expense = purchase.installments
       ? purchase.value / purchase.installments : purchase.value;
 
-    this.userService.increaseMonthlyExpense(purchase.user, expense);
-    const savedPurchase: Purchase = await this.purchaseService.save(purchase);
-    if (purchase.installments) {
-      await this.installmentsService
-        .save(savedPurchase, new Date(purchase.date + 'T00:00'), purchase.installments);
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    try {
+      this.userService.increaseMonthlyExpense(purchase.user, expense);
+      const savedPurchase: Purchase = await this.purchaseService.save(purchase);
+      if (purchase.installments) {
+        await this.installmentsService
+          .save(savedPurchase, new Date(purchase.date + 'T00:00'), purchase.installments);
+      }
+      queryRunner.commitTransaction();
+      return savedPurchase;
+    } catch (err) {
+      queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException(
+        'Não foi possível concluir a solicitação'
+      );
     }
-    return savedPurchase;
   }
 
   @Get('/csv')
