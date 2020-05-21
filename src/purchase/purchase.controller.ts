@@ -1,12 +1,13 @@
-import { Controller, Post, Body, ValidationPipe, Req, Delete, Get, Param, Put } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe, Req, Delete, Get, Param, Put, Res } from '@nestjs/common';
 import { PurchaseService } from './purchase.service';
 import { InstallmentsService } from 'src/installments/installments.service';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { UserService } from 'src/user/user.service';
 import { CategoryService } from 'src/category/category.service';
 import { Purchase } from './purchase.entity';
 import { User } from 'src/user/user.entity';
 import { CsvService } from 'src/csv/csv.service';
+import { Category } from 'src/category/category.entity';
 
 @Controller('purchase')
 export class PurchaseController {
@@ -22,26 +23,30 @@ export class PurchaseController {
     purchase.user = await this.userService
       .findOne(Number(request.headers.userid));
     purchase.category = await this.categoryService
-      .findOne(purchase.category_id);
+      .findOne(purchase.categoryId ?? 6);
 
     const savedPurchase: Purchase = await this.purchaseService.save(purchase);
-    await this.installmentsService
-      .save(savedPurchase, new Date(purchase.date + 'T00:00'), purchase.installments);
+    if (purchase.installments) {
+      await this.installmentsService
+        .save(savedPurchase, new Date(purchase.date + 'T00:00'), purchase.installments);
+    }
     return savedPurchase;
   }
 
-  @Get('/csv-sender')
-  async csvSender (@Req() request: Request) {
+  @Get('/csv')
+  async csv (@Req() request: Request, @Res() response: Response) {
     const user: User = await this.userService.findOne(
       Number(request.headers.userid)
     );
     const purchases = await this.purchaseService.findByUser(user);
 
     const header = 'Codigo;Titulo;Valor;Parcelas;Categoria;Data';
-    const content = purchases.map(purchase => purchase.toString());
+    const lines = purchases.map(purchase => purchase.toString());
 
     const csvPath = this.csvService
-      .generateCsv(`${user.name}-${user.surname}`, header, content);
+      .generateCsv(`${user.name}-${user.surname}`, header, lines);
+
+    return response.download(csvPath);
   }
 
   @Get()

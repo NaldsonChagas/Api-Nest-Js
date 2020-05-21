@@ -24,14 +24,17 @@ export class Purchase {
   @IsNotEmpty()
   longitude: string
 
-  @OneToOne(type => Installments, installments => installments.purchase,
-    { onDelete: 'CASCADE' })
+  @OneToOne(type => Installments, installments => installments.purchase, {
+    onDelete: 'CASCADE', nullable: true
+  })
   installments: Installments
 
   @ManyToOne(type => User, user => user.purchases)
   user: User
 
-  @ManyToOne(type => Category, category => category.purchases)
+  @ManyToOne(type => Category, category => category.purchases, {
+    nullable: false
+  })
   category: Category
 
   @Column({ type: 'date' })
@@ -44,6 +47,6 @@ export class Purchase {
   updatedAt: Date;
 
   public toString (): string {
-    return `${this.id};${this.title};${this.value};${this.installments.installments};${this.category.title};${this.date}`;
+    return `${this.id};${this.title};${this.value};${this.installments?.installments ?? 'N/A'};${this.category.title};${this.date}`;
   }
 }
