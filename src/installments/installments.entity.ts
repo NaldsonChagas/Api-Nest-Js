@@ -7,7 +7,8 @@ export class Installments {
   id: string
 
   @JoinColumn()
-  @OneToOne(type => Purchase, purchase => purchase.installments)
+  @OneToOne(type => Purchase, purchase => purchase.installments,
+    { onDelete: 'CASCADE' })
   purchase: Purchase
 
   @Column({ default: 0 })

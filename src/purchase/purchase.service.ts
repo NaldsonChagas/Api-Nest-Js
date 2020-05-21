@@ -14,7 +14,13 @@ export class PurchaseService {
       where: {
         user
       },
-      relations: ['category']
+      relations: ['category', 'installments']
+    });
+  }
+
+  async findOne (id: number) {
+    return this.purchaseRepository.findOne(id, {
+      relations: ['installments']
     });
   }
 

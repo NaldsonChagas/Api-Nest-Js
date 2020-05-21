@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Installments } from './installments.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeleteResult } from 'typeorm';
 import { Purchase } from 'src/purchase/purchase.entity';
 
 @Injectable()
@@ -21,5 +21,9 @@ export class InstallmentsService {
       end,
       purchase
     });
+  }
+
+  delete (installment: Installments): Promise<DeleteResult> {
+    return this.installmentsRepository.delete(installment.id);
   }
 }

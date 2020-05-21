@@ -1,4 +1,4 @@
-import { Controller, Post, Body, ValidationPipe, Req, Delete, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe, Req, Delete, Get, Param, Put } from '@nestjs/common';
 import { PurchaseService } from './purchase.service';
 import { InstallmentsService } from 'src/installments/installments.service';
 import { Request } from 'express';
@@ -6,6 +6,7 @@ import { UserService } from 'src/user/user.service';
 import { CategoryService } from 'src/category/category.service';
 import { Purchase } from './purchase.entity';
 import { User } from 'src/user/user.entity';
+import { DeleteResult } from 'typeorm';
 
 @Controller('purchase')
 export class PurchaseController {
@@ -33,5 +34,25 @@ export class PurchaseController {
     const userId = Number(request.headers.userid);
     const user: User = await this.userService.findOne(userId);
     return await this.purchaseService.findByUser(user);
+  }
+
+  @Get(':id')
+  async findOne (@Param() id: number) {
+    return await this.purchaseService.findOne(id);
+  }
+
+  @Put(':id')
+  async update (@Body(new ValidationPipe()) purchase, @Req() request: Request) {
+    purchase.id = Number(request.params.id);
+    purchase.user = await this.userService.findOne(
+      Number(request.headers.userid)
+    );
+    return this.purchaseService.save(purchase);
+  }
+
+  @Delete(':id')
+  async delete (@Param('id') id: number) {
+    const purchase = await this.purchaseService.findOne(id);
+    return this.purchaseService.delete(purchase.id);
   }
 }

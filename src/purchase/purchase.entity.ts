@@ -24,11 +24,11 @@ export class Purchase {
   @IsNotEmpty()
   longitude: string
 
-  @OneToOne(type => Installments, installments => installments.purchase)
+  @OneToOne(type => Installments, installments => installments.purchase,
+    { onDelete: 'CASCADE' })
   installments: Installments
 
-  @ManyToOne(type => User, user => user.purchases,
-    { nullable: false })
+  @ManyToOne(type => User, user => user.purchases)
   user: User
 
   @ManyToOne(type => Category, category => category.purchases)
