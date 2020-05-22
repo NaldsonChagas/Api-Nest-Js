@@ -9,7 +9,7 @@ export class PurchaseService {
   constructor (@InjectRepository(Purchase)
     private purchaseRepository: Repository<Purchase>) {}
 
-  async findByUser (user: User): Promise<Purchase[]> {
+  findByUser (user: User): Promise<Purchase[]> {
     return this.purchaseRepository.find({
       where: {
         user
@@ -18,17 +18,24 @@ export class PurchaseService {
     });
   }
 
-  async findOne (id: number) {
+  async findByDate (date, user: User) {
+    const purchases = await this.findByUser(user);
+    return purchases.filter(purchase => {
+      return purchase.date === date;
+    });
+  }
+
+  findOne (id: number) {
     return this.purchaseRepository.findOne(id, {
       relations: ['installments']
     });
   }
 
-  async save (purchase: Purchase): Promise<Purchase> {
+  save (purchase: Purchase): Promise<Purchase> {
     return this.purchaseRepository.save(purchase);
   }
 
-  async delete (purchaseId: number): Promise<DeleteResult> {
+  delete (purchaseId: number): Promise<DeleteResult> {
     return this.purchaseRepository.delete(purchaseId);
   }
 }

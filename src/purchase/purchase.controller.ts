@@ -77,6 +77,13 @@ export class PurchaseController {
     return await this.purchaseService.findOne(id);
   }
 
+  @Get('search-by-date/:date')
+  async findByDate (@Param('date') date: Date, @Req() request: Request) {
+    const userId = Number(request.headers.userid);
+    const user: User = await this.userService.findOne(userId);
+    return this.purchaseService.findByDate(date, user);
+  }
+
   @Put(':id')
   async update (@Body(new ValidationPipe()) purchase, @Req() request: Request) {
     purchase.id = Number(request.params.id);
